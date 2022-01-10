@@ -173,6 +173,8 @@ module XcodeInstall
         nil
       end
 
+      puts parsed_version
+      
       seedlist.each do |current_seed|
         return current_seed if current_seed.name == version
       end
@@ -351,7 +353,17 @@ HELP
     def spaceship
       @spaceship ||= begin
         begin
-          Spaceship.login(ENV['XCODE_INSTALL_USER'], ENV['XCODE_INSTALL_PASSWORD'])
+          Spaceship::ConnectAPI.auth(key_id: ENV['APPLE_KEY_ID'],
+                                     issuer_id: ENV['APPLE_ISSUER_ID'],
+                                     filepath: ENV['APPLE_KEYFILE_PATH'],
+                                     key: nil,
+                                     duration: nil,
+                                     in_house: nil)
+          ##Spaceship::ConnectAPI.
+          ###.login(ENV['XCODE_INSTALL_USER'], ENV['XCODE_INSTALL_PASSWORD'])
+          UI.message('Successfully logged in')
+
+
         rescue Spaceship::Client::InvalidUserCredentialsError
           raise 'The specified Apple developer account credentials are incorrect.'
         rescue Spaceship::Client::NoUserCredentialsError
